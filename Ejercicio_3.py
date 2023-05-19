@@ -13,7 +13,7 @@ def mapper(line, filename):
     else:
         pass #n1 == n2
         
-"""Dada una tupla que consta de un nodo y la lista con sus nodos adjacentes, devuelve las conexiones derivadas por el nodo presentes en el grafo"""
+"""Dada una tupla que consta de un nodo y la lista con sus nodos adyacentes, devuelve las conexiones derivadas por el nodo presentes en el grafo"""
 def conexiones(tupla):
     lista_conexiones = []
     for i in range(len(tupla[1])): #Para cada elemento de la lista de adjacencia 
@@ -48,7 +48,7 @@ def ejercicio_tres(sc,files):
         file_rdd = sc.textFile(file)
         graph_clean = file_rdd.map(lambda y: mapper(y,file)).filter(lambda x: x != None).distinct()
         rdd = rdd.union(graph_clean)
-    adjacents = rdd.groupByKey() #RDD de tuplas donde a cada nodo le acompaña su RDD de nodos adjacentes, forma ('A', ['B','C','D','F']) 
+    adjacents = rdd.groupByKey() #RDD de tuplas donde a cada nodo le acompaña su RDD de nodos adyacentes, forma ('A', ['B','C','D','F']) 
     rdd_conexiones = adjacents.mapValues(list).flatMap(conexiones)  #RDD con todas las conexiones presentes en el grafo de la forma ((A, B) , exists) o bien ((B, C), ('pending', A))                   
     rdd_triciclos = rdd_conexiones.groupByKey().mapValues(list).filter(posible_triciclo).flatMap(triciclos) #RDD con todos los triciclos del grafo
     print(rdd_triciclos.collect())
